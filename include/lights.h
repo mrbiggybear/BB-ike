@@ -46,7 +46,7 @@ ICACHE_RAM_ATTR void checkTicks()
 #define D1 2
 #define D2 3
 
-#define TX_PIN 21 //22   // D5
+#define TX_PIN 21 // 22   // D5
 #define RX_PIN 8  // B0
 
 const int l_pin = D1;
@@ -130,78 +130,40 @@ int hold_start_L;
 int hold_start_R;
 
 // this function will be called when the button was pressed 1 time only.
-void singleClick_L()
+vvoid singleClick(bool is_left)
 {
   Serial.println("singleClick_L() detected.");
   tx_led.toggle();
 } // singleClick
 
-void singleClick_R()
-{
-  Serial.println("singleClick_R() detected.");
-  rx_led.toggle();
-} // singleClick
-
 // this function will be called when the button was pressed 2 times in a short timeframe.
-void doubleClick_L()
+void doubleClick(bool is_left)
 {
   Serial.println("doubleClick_L() detected.");
   tx_led.on_off(800);
 } // doubleClick
 
-// this function will be called when the button was pressed 2 times in a short timeframe.
-void doubleClick_R()
-{
-  Serial.println("doubleClick_R() detected.");
-  rx_led.on_off(800);
-} // doubleClick
-
-// this function will be called when the button was pressed multiple times in a short timeframe.
-void multiClick_L()
-{
-  Serial.print("multiClick_L(");
-  Serial.print(LEFT.getNumberClicks());
-  Serial.println(") detected.");
-} // multiClick
-
-// this function will be called when the button was pressed multiple times in a short timeframe.
-void multiClick_R()
-{
-  Serial.print("multiClick_R(");
-  Serial.print(LEFT.getNumberClicks());
-  Serial.println(") detected.");
-} // multiClick
+// // this function will be called when the button was pressed multiple times in a short timeframe.
+// void multiClick()
+// {
+//   Serial.print("multiClick_L(");
+//   Serial.print(LEFT.getNumberClicks());
+//   Serial.println(") detected.");
+// } // multiClick
 
 // this function will be called when the button was held down for 1 second or more.
-void pressStart_L()
+void pressStart(bool is_left)
 {
   Serial.println("pressStart_L()");
   hold_start_L = millis() - 1000; // as set in setPressTicks()
   tx_led.on();
 } // pressStart()
 
-// this function will be called when the button was held down for 1 second or more.
-void pressStart_R()
-{
-  Serial.println("pressStart_R()");
-  hold_start_L = millis() - 1000; // as set in setPressTicks()
-  rx_led.on();
-} // pressStart()
-
 // this function will be called when the button was released after a long hold.
-void pressStop_L()
+void pressStop(bool is_left)
 {
   tx_led.off();
   Serial.print("pressStop_L(");
-  Serial.print(millis() - hold_start_L);
-  Serial.println(") detected.");
-} // pressStop()
-
-// this function will be called when the button was released after a long hold.
-void pressStop_R()
-{
-  rx_led.off();
-  Serial.print("pressStop_R(");
   Serial.print(millis() - hold_start_L);
   Serial.println(") detected.");
 } // pressStop()
@@ -215,19 +177,19 @@ namespace Lights
       debounce = _debounce;
     }
 
-    LEFT.attachClick(singleClick_L);
-    RIGHT.attachClick(singleClick_R);
+    LEFT.attachClick(singleClick(true));
+    RIGHT.attachClick(singleClick(false));
     LEFT.setClickTicks(debounce);
     RIGHT.setClickTicks(debounce);
 
-    LEFT.attachDoubleClick(doubleClick_L);
-    RIGHT.attachDoubleClick(doubleClick_R);
+    LEFT.attachDoubleClick(doubleClick(true));
+    RIGHT.attachDoubleClick(doubleClick(false));
     // button.attachMultiClick(multiClick);
 
-    LEFT.attachLongPressStart(pressStart_L);
-    RIGHT.attachLongPressStart(pressStart_R);
-    LEFT.attachLongPressStop(pressStop_L);
-    RIGHT.attachLongPressStop(pressStop_R);
+    LEFT.attachLongPressStart(pressStart(true));
+    RIGHT.attachLongPressStart(pressStart(false));
+    LEFT.attachLongPressStop(pressStop(true));
+    RIGHT.attachLongPressStop(pressStop(false));
     LEFT.setPressTicks(debounce * 2);  // that is the time when LongPressStart is called
     RIGHT.setPressTicks(debounce * 2); // that is the time when LongPressStart is called
   }

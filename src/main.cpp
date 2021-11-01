@@ -9,8 +9,8 @@ int timer = 0;
 void setup()
 {
     // set serial baud
-    Serial.begin(9600);
-    Serial1.begin(9600);
+    Serial.begin(9600); // console
+    Serial1.begin(9600); // gps
 
     // gps is setup in 'gps.h'
     Lights::setup();
@@ -28,7 +28,7 @@ void loop()
         // read gps
         read();
     }
-
+    // wait
     delay(80);
     // check buttons
     checkTicks();
